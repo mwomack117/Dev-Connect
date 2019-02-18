@@ -1,0 +1,32 @@
+{
+  "name": "social-network",
+  "version": "1.0.0",
+  "description": "Social network for developers",
+  "main": "server.js",
+  "scripts": {
+    "start": "node server.js",
+    "server": "nodemon server.js"
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/mwomack117/Social-Network.git"
+  },
+  "author": "Michael Womack",
+  "license": "ISC",
+  "bugs": {
+    "url": "https://github.com/mwomack117/Social-Network/issues"
+  },
+  "homepage": "https://github.com/mwomack117/Social-Network#readme",
+  "dependencies": {
+    "bcryptjs": "^2.4.3",
+    "express": "^4.16.4",
+    "jsonwebtoken": "^8.4.0",
+    "mongoose": "^5.4.13",
+    "passport": "^0.4.0",
+    "passport-jwt": "^4.0.0",
+    "validator": "^10.11.0"
+  },
+  "devDependencies": {
+    "nodemon": "^1.18.10"
+  }
+}
