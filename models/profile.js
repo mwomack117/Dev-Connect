@@ -111,8 +111,10 @@ const ProfileSchema = new Schema({
       type: String
     }
   },
-  date: Date,
-  default: Date.now()
+  date: {
+    type: Date,
+    default: Date.now()
+  }
 });
 
 const Profile = mongoose.model("profile", ProfileSchema);
