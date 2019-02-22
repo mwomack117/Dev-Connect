@@ -42,9 +42,9 @@ router.post("/register", (req, res) => {
         d: "mm" // Default (empty user image/placeholder)
       });
       const newUser = new User({
-        name: name,
-        email: email,
-        password: password,
+        name,
+        email,
+        password,
         avatar
       });
 
