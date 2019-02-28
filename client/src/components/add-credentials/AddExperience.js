@@ -4,7 +4,7 @@ import TextFieldGroup from "../common/TextFieldGroup";
 import TextAreaFieldGroup from "../common/TextAreaFieldGroup";
 import { connect } from "react-redux";
 import PropTypes from "prop-types";
-import { log } from "util";
+import { addExperience } from "../../actions/profileActions";
 
 class AddExperience extends Component {
   constructor(props) {
@@ -23,6 +23,14 @@ class AddExperience extends Component {
     };
   }
 
+  componentWillReceiveProps(nextProps) {
+    if (nextProps.errors) {
+      this.setState({
+        errors: nextProps.errors
+      });
+    }
+  }
+
   onChange = e => {
     this.setState({
       [e.target.name]: e.target.value
@@ -31,7 +39,17 @@ class AddExperience extends Component {
 
   onSubmit = e => {
     e.preventDefault();
-    console.log("Submitted");
+
+    const expData = {
+      company: this.state.company,
+      title: this.state.title,
+      location: this.state.location,
+      from: this.state.from,
+      to: this.state.to,
+      current: this.state.current,
+      description: this.state.description
+    };
+    this.props.addExperience(expData, this.props.history);
   };
 
   onCheck = e => {
@@ -77,13 +95,6 @@ class AddExperience extends Component {
                   value={this.state.location}
                   onChange={this.onChange}
                   error={errors.location}
-                />
-                <TextFieldGroup
-                  placeholder="Company"
-                  name="company"
-                  value={this.state.company}
-                  onChange={this.onChange}
-                  error={errors.company}
                 />
                 <h6>From Date</h6>
                 <TextFieldGroup
@@ -138,9 +149,10 @@ class AddExperience extends Component {
   }
 }
 
-AddExperience.protoTypes = {
+AddExperience.propTypes = {
   profile: PropTypes.object.isRequired,
-  errors: PropTypes.object.isRequired
+  errors: PropTypes.object.isRequired,
+  addExperience: PropTypes.func.isRequired
 };
 
 const mapStateToProps = state => ({
@@ -148,4 +160,7 @@ const mapStateToProps = state => ({
   errors: state.errors
 });
 
-export default connect(mapStateToProps)(withRouter(AddExperience));
+export default connect(
+  mapStateToProps,
+  { addExperience }
+)(withRouter(AddExperience));
