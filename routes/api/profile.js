@@ -2,6 +2,7 @@ const express = require("express");
 const router = express.Router();
 const mongoose = require("mongoose");
 const passport = require("passport");
+const request = require("request");
 
 // Load Validation
 const validateProfileInput = require("../../validation/profile");
@@ -93,6 +94,30 @@ router.get("/user/:user_id", (req, res) => {
     .catch(err =>
       res.status(404).json({ profile: "There is no profile for this user" })
     );
+});
+
+// @route       GET api/profile/github/:username/:count/:sort
+// @desc        Get github data from github api
+// @access      Public
+router.get("/github/:username/:count/:sort", (req, res) => {
+  username = req.params.username;
+  clientId = "d5a39aabb7076e0f0b0f";
+  clientSecret = "a8bfe1c94c12318ed17fb52440c70e75d866ff17";
+  count = req.params.count;
+  sort = req.params.sort;
+  const options = {
+    url: `https://api.github.com/users/${username}/repos?per_page=${count}&sort=${sort}&client_id=${clientId}&client_secret=${clientSecret}`,
+    headers: {
+      "User-Agent": "request"
+    }
+  };
+  function callback(error, response, body) {
+    if (!error && response.statusCode == 200) {
+      const info = JSON.parse(body);
+      res.json(info);
+    }
+  }
+  request(options, callback);
 });
 
 // @route   POST api/profile/
