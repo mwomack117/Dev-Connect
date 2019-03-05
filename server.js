@@ -13,7 +13,9 @@ app.use(express.urlencoded({ extended: true }));
 app.use(express.json());
 
 // DB config
-const db = require("./config/keys").mongoURI;
+// const db = require("./config/keys").mongoURI;
+
+const db = process.env.MONGO_URI || "mongodb://localhost/project-login";
 
 // Connect to MongoDB
 mongoose
