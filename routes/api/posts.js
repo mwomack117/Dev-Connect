@@ -5,7 +5,6 @@ const passport = require("passport");
 
 // Post model
 const Post = require("../../models/Post");
-
 // Profile model
 const Profile = require("../../models/Profile");
 
@@ -13,9 +12,9 @@ const Profile = require("../../models/Profile");
 const validatePostInput = require("../../validation/post");
 
 // @route   GET api/posts/test
-// @desc    Tests posts route
+// @desc    Tests post route
 // @access  Public
-router.get("/test", (req, res) => res.json({ msg: "posts works" }));
+router.get("/test", (req, res) => res.json({ msg: "Posts Works" }));
 
 // @route   GET api/posts
 // @desc    Get posts
@@ -24,7 +23,7 @@ router.get("/", (req, res) => {
   Post.find()
     .sort({ date: -1 })
     .then(posts => res.json(posts))
-    .catch(err => res.status(404).json({ noposts: "No posts found" }));
+    .catch(err => res.status(404).json({ nopostsfound: "No posts found" }));
 });
 
 // @route   GET api/posts/:id
@@ -32,14 +31,20 @@ router.get("/", (req, res) => {
 // @access  Public
 router.get("/:id", (req, res) => {
   Post.findById(req.params.id)
-    .then(post => res.json(post))
+    .then(post => {
+      if (post) {
+        res.json(post);
+      } else {
+        res.status(404).json({ nopostfound: "No post found with that ID" });
+      }
+    })
     .catch(err =>
       res.status(404).json({ nopostfound: "No post found with that ID" })
     );
 });
 
 // @route   POST api/posts
-// @desc    Create posts
+// @desc    Create post
 // @access  Private
 router.post(
   "/",
@@ -49,7 +54,7 @@ router.post(
 
     // Check Validation
     if (!isValid) {
-      //return any errors with 400 status
+      // If any errors, send 400 with errors object
       return res.status(400).json(errors);
     }
 
@@ -111,7 +116,6 @@ router.post(
           // Add user id to likes array
           post.likes.unshift({ user: req.user.id });
 
-          //save to database
           post.save().then(post => res.json(post));
         })
         .catch(err => res.status(404).json({ postnotfound: "No post found" }));
@@ -130,9 +134,8 @@ router.post(
       Post.findById(req.params.id)
         .then(post => {
           if (
-            (post.likes.filter(
-              like => like.user.toString() === req.user.id
-            ).length = 0)
+            post.likes.filter(like => like.user.toString() === req.user.id)
+              .length === 0
           ) {
             return res
               .status(400)
@@ -147,7 +150,7 @@ router.post(
           // Splice out of array
           post.likes.splice(removeIndex, 1);
 
-          // Save to DB
+          // Save
           post.save().then(post => res.json(post));
         })
         .catch(err => res.status(404).json({ postnotfound: "No post found" }));
@@ -155,8 +158,8 @@ router.post(
   }
 );
 
-// @route   POST api/posts/comment/:id (post id.. need to know which post adding comment to)
-// @desc    Comment post
+// @route   POST api/posts/comment/:id
+// @desc    Add comment to post
 // @access  Private
 router.post(
   "/comment/:id",
@@ -166,7 +169,7 @@ router.post(
 
     // Check Validation
     if (!isValid) {
-      //return any errors with 400 status
+      // If any errors, send 400 with errors object
       return res.status(400).json(errors);
     }
 
@@ -182,7 +185,7 @@ router.post(
         // Add to comments array
         post.comments.unshift(newComment);
 
-        //Save
+        // Save
         post.save().then(post => res.json(post));
       })
       .catch(err => res.status(404).json({ postnotfound: "No post found" }));
@@ -214,7 +217,7 @@ router.delete(
           .map(item => item._id.toString())
           .indexOf(req.params.comment_id);
 
-        // Splice it out of array
+        // Splice comment out of array
         post.comments.splice(removeIndex, 1);
 
         post.save().then(post => res.json(post));
