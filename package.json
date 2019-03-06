@@ -28,6 +28,16 @@
     "passport-jwt": "^4.0.0",
     "validator": "^10.11.0"
   },
+  "eslintConfig": {
+    "extends": "react-app"
+  },
+  "proxy": "http://127.0.0.1:8080",
+  "browserslist": [
+    ">0.2%",
+    "not dead",
+    "not ie <= 11",
+    "not op_mini all"
+  ],
   "devDependencies": {
     "nodemon": "^1.18.10"
   }
